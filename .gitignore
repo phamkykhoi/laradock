@@ -25,3 +25,6 @@
 docker-compose.custom.yml
 
 .DS_Store
+public/.DS_Store
+.git
+.git/
