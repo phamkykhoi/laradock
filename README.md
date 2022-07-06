@@ -1,7 +1,10 @@
 
 Change file .env
+
 APP_CODE_PATH_HOST: Your local folder
+
 APP_CODE_PATH_CONTAINER: Folder in docker
+
 COMPOSE_PROJECT_NAME: project_name (default is laradock)
 
 - docker-compose build --no-cache php-fpm
