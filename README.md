@@ -69,7 +69,7 @@ APP_CODE_PATH_HOST: Your local folder include project folder
     }
     ```
     
-    - Config file hosts on your machine
+   - Config file hosts on your machine
     
       - Ex: 127.0.0.1 demo.app.local
       - Guide: https://docs.google.com/document/d/10vIofJLGKrtpIh3A9ztczSFyf71xUcvKDnLcTVw4AuU/edit?usp=sharing
@@ -81,6 +81,7 @@ APP_CODE_PATH_HOST: Your local folder include project folder
 Restart a container
 
 Ex: 
+
     - docker exec f416f7321dce nginx -s reload
     
     - docker-compose restart nginx
