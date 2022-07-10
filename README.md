@@ -3,6 +3,7 @@
 - Link download: https://docs.docker.com/desktop/windows/install/
 ## 2. Login to docker with an account
 - Create an account on https://hub.docker.com/signup
+- Login with your account on docker desktop
 
 ## 3. Install Laradock 
 
