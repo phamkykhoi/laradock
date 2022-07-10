@@ -1,4 +1,12 @@
 
+## 1. Download docker and install
+- Link download: https://docs.docker.com/desktop/windows/install/
+## 2. Login to docker with an account
+- Create an account on https://hub.docker.com/signup
+
+## 3. Install Laradock 
+
+After clone 
 Change file .env
 
 APP_CODE_PATH_HOST: Your local folder
