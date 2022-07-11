@@ -9,8 +9,9 @@
 
 After clone code from repo: https://github.com/phamkykhoi/laradock.git
 
-- Step1. Copy file .env.example to .env
-- Step2. Config in .env file
+- Step1. git clone git@github.com:phamkykhoi/laradock.git
+- Step2. Copy file .env.example to .env
+- Step3. Config in .env file
 ```
 APP_CODE_PATH_HOST: Your local folder include project folder
 ```
