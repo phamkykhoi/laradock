@@ -78,7 +78,25 @@ APP_CODE_PATH_HOST: Your local folder include project folder
 - Open chrome and run with domain: demo.app.local
 
 
-### Note
+## How to run Laravel in docker
+
+**- Step1**: Login to docker with command ```docker exec -it laradock_workspace_1 bash```
+
+**- Step2**: Make new folder with command ```mkdir intern-project```
+
+**- Step3**: Go to folder ```intern-project``` by command ```cd intern-project```
+
+**- Step4**: Create a Laravel project ```composer create-project laravel/laravel . ```
+
+**- Step5**: Config virtual host like above (Create new file *.app.conf in folder nginx/sites)
+
+**- Step6**: Config file hosts like above with your new local domain
+
+**- Step7**: Open chrome and run with your domain
+
+
+
+#### Note
 Restart a container
 
 Ex: 
