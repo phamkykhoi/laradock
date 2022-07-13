@@ -81,6 +81,9 @@ APP_CODE_PATH_HOST: Your local folder include project folder
     
       - Ex: 127.0.0.1 demo.app.local
       - Guide: https://docs.google.com/document/d/10vIofJLGKrtpIh3A9ztczSFyf71xUcvKDnLcTVw4AuU/edit?usp=sharing
+## Restart nginx
+- docker-compose restart nginx
+
 ## Run your website
 - Open chrome and run with domain: demo.app.local
 
