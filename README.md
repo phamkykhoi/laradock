@@ -22,7 +22,13 @@ APP_CODE_PATH_HOST: Your local folder include project folder
     - docker-compose build --no-cache phpmyadmin
     - docker-compose build --no-cache redis
     - docker-compose up -d php-fpm nginx mysql phpmyadmin redis
-    - docker exec -it laradock_workspace_1 bash
+
+
+## Login to app in docker
+- Use the command 
+    ```docker exec -it laradock_workspace_1 bash```
+- Or use the command 
+    ```docker exec -it app_container_id  bash```
 ## How to run a PHP Project in Laradock
 - Config virtual host
     - Create a file in folder nginx/sites. Ex: demo.app.conf
