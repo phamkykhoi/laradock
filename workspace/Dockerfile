@@ -804,11 +804,16 @@ COPY ./.npmrc /home/laradock/.npmrc
 # PNPM:
 ###########################################################################
 
-USER laradock
+USER root
 
 ARG INSTALL_PNPM=false
+ENV PNPM_HOME="/home/laradock/.local/share/pnpm"
+ENV PATH $PATH:/home/laradock/.local/share/pnpm
 
 RUN if [ ${INSTALL_PNPM} = true ]; then \
+    echo "" >> ~/.bashrc && \
+    echo 'export PNPM_HOME="/home/laradock/.local/share/pnpm"' >> ~/.bashrc && \
+    echo 'export PATH="$PNPM_HOME:$PATH"' >> ~/.bashrc && \
     npx pnpm add -g pnpm \
 ;fi
 
@@ -1440,9 +1445,11 @@ RUN if [ ${INSTALL_AUDIOWAVEFORM} = true ]; then \
 USER root
 
 ARG INSTALL_WKHTMLTOPDF=false
+ARG WKHTMLTOPDF_VERSION=0.12.6-1
 
 RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
-   apt-get install -y \
+   ARCH=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
+   && apt-get install -y \
    libxrender1 \
    libfontconfig1 \
    libx11-dev \
@@ -1453,8 +1460,8 @@ RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
    xfonts-base \
    xfonts-75dpi \
    wget \
-   && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb \
-   && dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb \
+   && wget "https://github.com/wkhtmltopdf/packaging/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox_0.12.6-1.bionic_${ARCH}.deb" \
+   && dpkg -i "wkhtmltox_${WKHTMLTOPDF_VERSION}.bionic_${ARCH}.deb" \
    && apt -f install \
 ;fi
 
@@ -1560,7 +1567,7 @@ ARG SHELL_OH_MY_ZSH_ALIASES=false
 USER laradock
 RUN if [ ${SHELL_OH_MY_ZSH} = true ]; then \
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --keep-zshrc" && \
-    sed -i -r 's/^plugins=\(.*?\)$/plugins=(laravel5)/' /home/laradock/.zshrc && \
+    sed -i -r 's/^plugins=\(.*?\)$/plugins=(laravel composer)/' /home/laradock/.zshrc && \
     echo '\n\
 bindkey "^[OB" down-line-or-search\n\
 bindkey "^[OC" forward-char\n\
@@ -1732,6 +1739,41 @@ RUN if [ ${INSTALL_ZMQ} = true ]; then \
     && echo "extension=zmq.so" >> /etc/php/${LARADOCK_PHP_VERSION}/mods-available/zmq.ini \
     && ln -s /etc/php/${LARADOCK_PHP_VERSION}/mods-available/zmq.ini /etc/php/${LARADOCK_PHP_VERSION}/cli/conf.d/20-zmq.ini \
 ;fi
+
+############################################################################
+## Event:
+############################################################################
+USER root
+
+ARG INSTALL_EVENT=false
+
+RUN set -eux; \
+  if [ ${INSTALL_EVENT} = true ]; then \
+      curl -L -o  /tmp/libevent.tar.gz https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz   &&\
+      mkdir -p /tmp/libevent-php &&\
+      tar -C /tmp/libevent-php -zxvf /tmp/libevent.tar.gz --strip 1 &&\
+      cd /tmp/libevent-php &&\
+      ./configure --prefix=/usr/local/libevent-2.1.12  &&\
+      make &&\
+      make install &&\
+      rm /tmp/libevent.tar.gz &&\
+      echo "extension=sockets.so" >> /etc/php/${LARADOCK_PHP_VERSION}/mods-available/sockets.ini && \
+      ln -s /etc/php/${LARADOCK_PHP_VERSION}/mods-available/sockets.ini /etc/php/${LARADOCK_PHP_VERSION}/cli/conf.d/20-sockets.ini && \
+      curl -L -o /tmp/event.tar.gz http://pecl.php.net/get/event-3.0.6.tgz &&\
+      mkdir -p /tmp/event-php &&\
+      tar -C /tmp/event-php -zxvf /tmp/event.tar.gz --strip 1 &&\
+      cd /tmp/event-php &&\
+      phpize &&\
+      ./configure  --with-event-libevent-dir=/usr/local/libevent-2.1.12/ &&\
+      make &&\
+      make install &&\
+      rm /tmp/event.tar.gz &&\
+      echo "extension=event.so" >> /etc/php/${LARADOCK_PHP_VERSION}/mods-available/event.ini && \
+      ln -s /etc/php/${LARADOCK_PHP_VERSION}/mods-available/event.ini /etc/php/${LARADOCK_PHP_VERSION}/cli/conf.d/20-event.ini && \
+      php -m  | grep -q 'event' \
+;fi
+
+
 
 #
 #--------------------------------------------------------------------------

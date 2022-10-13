@@ -162,6 +162,7 @@ services:
           - INSTALL_FFMPEG=${WORKSPACE_INSTALL_FFMPEG}
           - INSTALL_AUDIOWAVEFORM=${WORKSPACE_INSTALL_AUDIOWAVEFORM}
           - INSTALL_WKHTMLTOPDF=${WORKSPACE_INSTALL_WKHTMLTOPDF}
+          - WKHTMLTOPDF_VERSION=${WORKSPACE_WKHTMLTOPDF_VERSION}
           - INSTALL_GNU_PARALLEL=${WORKSPACE_INSTALL_GNU_PARALLEL}
           - INSTALL_LNAV=${WORKSPACE_INSTALL_LNAV}
           - INSTALL_PROTOC=${WORKSPACE_INSTALL_PROTOC}
@@ -172,6 +173,7 @@ services:
           - PROTOC_VERSION=${WORKSPACE_PROTOC_VERSION}
           - INSTALL_DOCKER_CLIENT=${WORKSPACE_INSTALL_DOCKER_CLIENT}
           - INSTALL_MEMCACHED=${WORKSPACE_INSTALL_MEMCACHED}
+          - INSTALL_EVENT=${WORKSPACE_INSTALL_EVENT}
           - http_proxy
           - https_proxy
           - no_proxy
@@ -355,12 +357,14 @@ services:
           - INSTALL_FFMPEG=${PHP_FPM_FFMPEG}
           - INSTALL_AUDIOWAVEFORM=${PHP_FPM_AUDIOWAVEFORM}
           - INSTALL_WKHTMLTOPDF=${PHP_FPM_INSTALL_WKHTMLTOPDF}
+          - WKHTMLTOPDF_VERSION=${WORKSPACE_WKHTMLTOPDF_VERSION}
           - INSTALL_XHPROF=${PHP_FPM_INSTALL_XHPROF}
           - INSTALL_XMLRPC=${PHP_FPM_INSTALL_XMLRPC}
           - INSTALL_PHPDECIMAL=${PHP_FPM_INSTALL_PHPDECIMAL}
           - INSTALL_ZOOKEEPER=${PHP_FPM_INSTALL_ZOOKEEPER}
           - INSTALL_SSDB=${PHP_FPM_INSTALL_SSDB}
           - INSTALL_TRADER=${PHP_FPM_INSTALL_TRADER}
+          - INSTALL_EVENT=${PHP_FPM_INSTALL_EVENT}
           - DOWNGRADE_OPENSSL_TLS_AND_SECLEVEL=${PHP_DOWNGRADE_OPENSSL_TLS_AND_SECLEVEL}
           - PUID=${PHP_FPM_PUID}
           - PGID=${PHP_FPM_PGID}
@@ -434,6 +438,7 @@ services:
           - INSTALL_IMAP=${PHP_WORKER_INSTALL_IMAP}
           - INSTALL_XMLRPC=${PHP_WORKER_INSTALL_XMLRPC}
           - INSTALL_SSDB=${PHP_WORKER_INSTALL_SSDB}
+          - INSTALL_EVENT=${PHP_WORKER_INSTALL_EVENT}
           - PUID=${PHP_WORKER_PUID}
           - PGID=${PHP_WORKER_PGID}
           - IMAGEMAGICK_VERSION=${PHP_WORKER_IMAGEMAGICK_VERSION}
@@ -481,6 +486,17 @@ services:
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
       networks:
+        - backend
+
+  ### Soketi Server ##############################################
+    soketi:
+      build:
+        context: ./soketi
+      ports:
+        - "${SOKETI_PORT}:6001"
+        - "${SOKETI_METRICS_SERVER_PORT}:9601"
+      networks:
+        - frontend
         - backend
 
 ### NGINX Server #########################################
@@ -1642,6 +1658,7 @@ services:
         - ADMIN_PASS=${REDIS_WEBUI_PASSWORD}
         - REDIS_1_HOST=${REDIS_WEBUI_CONNECT_HOST}
         - REDIS_1_PORT=${REDIS_WEBUI_CONNECT_PORT}
+        - REDIS_1_AUTH=${REDIS_PASSWORD}
       networks:
         - backend
       ports:
