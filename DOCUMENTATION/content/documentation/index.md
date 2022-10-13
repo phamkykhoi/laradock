@@ -915,7 +915,11 @@ run from any cli: <br>`curl -X PURGE https://yourwebsite.com/`.
     	// ...
     
     ],
-    ```
+
+	// ...
+
+],
+```
 
 5 - Open your Laravel's `.env` file and update the following variables:
 

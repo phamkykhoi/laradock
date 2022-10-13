@@ -828,7 +828,3 @@ Docker 或 Laravel 的特别帮助，你可以在 [Codementor.io](https://www.co
 ## 许可证
 
 [MIT License](https://github.com/laradock/laradock/blob/master/LICENSE) (MIT)
-
-
-## docker-compose up --build --force-recreate mysql
-## docker-compose up --build --force-recreate mysql

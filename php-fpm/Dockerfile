@@ -1036,11 +1036,9 @@ RUN if [ ${INSTALL_AUDIOWAVEFORM} = true ]; then \
 USER root
 
 ARG INSTALL_WKHTMLTOPDF=false
-ARG WKHTMLTOPDF_VERSION=0.12.6-1
 
 RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
-    ARCH=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
-    && apt-get install -yqq \
+    apt-get install -yqq \
       libxrender1 \
       libfontconfig1 \
       libx11-dev \
@@ -1051,8 +1049,8 @@ RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
       xfonts-base \
       xfonts-75dpi \
       wget \
-    && wget "https://github.com/wkhtmltopdf/packaging/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox_0.12.6-1.stretch_${ARCH}.deb" \
-    && dpkg -i "wkhtmltox_${WKHTMLTOPDF_VERSION}.stretch_${ARCH}.deb" \
+    && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.stretch_amd64.deb \
+    && dpkg -i wkhtmltox_0.12.6-1.stretch_amd64.deb \
     && apt -f install \
 ;fi
 
@@ -1227,7 +1225,7 @@ ARG INSTALL_ZMQ=false
 
 RUN if [ ${INSTALL_ZMQ} = true ]; then \
     apt-get install --yes git libzmq3-dev \
-    && git clone https://github.com/zeromq/php-zmq.git \
+    && git clone git://github.com/mkoppanen/php-zmq.git \
     && cd php-zmq \
     && phpize \
     && ./configure \
@@ -1236,38 +1234,6 @@ RUN if [ ${INSTALL_ZMQ} = true ]; then \
     && cd .. \
     && rm -fr php-zmq \
     && echo "extension=zmq.so" > /usr/local/etc/php/conf.d/zmq.ini \
-;fi
-
-
-############################################################################
-## Event:
-############################################################################
-USER root
-
-ARG INSTALL_EVENT=false
-
-RUN set -eux; \
-  if [ ${INSTALL_EVENT} = true ]; then \
-      curl -L -o  /tmp/libevent.tar.gz https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz   &&\
-      mkdir -p /tmp/libevent-php &&\
-      tar -C /tmp/libevent-php -zxvf /tmp/libevent.tar.gz --strip 1 &&\
-      cd /tmp/libevent-php &&\
-      ./configure --prefix=/usr/local/libevent-2.1.12  &&\
-      make &&\
-      make install &&\
-      rm /tmp/libevent.tar.gz &&\
-      docker-php-ext-install sockets  &&\
-      curl -L -o /tmp/event.tar.gz http://pecl.php.net/get/event-3.0.6.tgz &&\
-      mkdir -p /tmp/event-php &&\
-      tar -C /tmp/event-php -zxvf /tmp/event.tar.gz --strip 1 &&\
-      cd /tmp/event-php &&\
-      phpize &&\
-      ./configure  --with-event-libevent-dir=/usr/local/libevent-2.1.12/ &&\
-      make &&\
-      make install &&\
-      rm /tmp/event.tar.gz &&\
-      docker-php-ext-enable event &&\
-      php -m  | grep -q 'event' \
 ;fi
 
 ###########################################################################
